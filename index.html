@@ -87,25 +87,27 @@ body {
   flex: 1;
 }
 
-/* ===== ROLE BADGE ===== */
+/* ===== ROLE BADGE (canto superior esquerdo) ===== */
 .role-badge {
   position: fixed;
-  top: clamp(50px, 8vh, 70px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,150,50,0.9);
+  top: clamp(44px, 7vh, 58px);
+  left: clamp(8px, 2vw, 16px);
+  background: rgba(0,150,50,0.92);
   color: #fff;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: clamp(0.65em, 1.8vw, 0.85em);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: clamp(0.55em, 1.5vw, 0.75em);
   font-weight: bold;
   letter-spacing: 1px;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.4);
   z-index: 50;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5), 0 0 12px rgba(0,255,100,0.3);
 }
-.role-badge.spectator { background: rgba(200,150,0,0.9); }
+.role-badge.spectator {
+  background: rgba(200,150,0,0.92);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5), 0 0 12px rgba(255,200,0,0.3);
+}
 
 .logo {
   text-align: center;
@@ -457,7 +459,7 @@ body {
   .num { font-size: clamp(1.4em, 5vh, 2.2em); }
   .brand { font-size: clamp(0.7em, 2vh, 1em); }
   .header { padding: 4px 16px; }
-  .role-badge { top: clamp(30px, 6vh, 50px); }
+  .role-badge { top: clamp(28px, 5vh, 40px); }
 }
 </style>
 </head>
