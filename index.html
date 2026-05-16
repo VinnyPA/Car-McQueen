@@ -36,7 +36,6 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-/* ===== HEADER ===== */
 .header {
   display: flex;
   justify-content: space-between;
@@ -64,10 +63,7 @@ body {
   box-shadow: 0 0 8px #f00;
   flex-shrink: 0;
 }
-.status-dot.connected {
-  background: #0f0;
-  box-shadow: 0 0 10px #0f0;
-}
+.status-dot.connected { background: #0f0; box-shadow: 0 0 10px #0f0; }
 .battery-bars {
   display: inline-flex; gap: 1px; align-items: center;
   padding: 2px 3px; border: 1.5px solid #0f0; border-radius: 3px;
@@ -91,7 +87,26 @@ body {
   flex: 1;
 }
 
-/* ===== LOGO 95 MCQUEEN ===== */
+/* ===== ROLE BADGE ===== */
+.role-badge {
+  position: fixed;
+  top: clamp(50px, 8vh, 70px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,150,50,0.9);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: clamp(0.65em, 1.8vw, 0.85em);
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255,255,255,0.3);
+  z-index: 50;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.role-badge.spectator { background: rgba(200,150,0,0.9); }
+
 .logo {
   text-align: center;
   padding: clamp(4px, 1vw, 10px) 0 0;
@@ -136,7 +151,6 @@ body {
   font-style: italic;
 }
 
-/* ===== MAIN ===== */
 .main {
   flex: 1;
   display: grid;
@@ -146,9 +160,11 @@ body {
   gap: clamp(4px, 1.5vw, 16px);
   padding: clamp(4px, 1.5vw, 16px) clamp(8px, 2vw, 20px);
   min-height: 0;
+  position: relative;
 }
+.main.spectator .joystick { opacity: 0.4; pointer-events: none; }
+.main.spectator .joystick-knob { background: radial-gradient(circle at 35% 30%, #888 0%, #444 40%, #222 100%) !important; }
 
-/* ===== JOYSTICK ===== */
 .joystick {
   --size: clamp(110px, min(30vw, 38vh), 210px);
   width: var(--size);
@@ -165,6 +181,7 @@ body {
     0 8px 18px rgba(0,0,0,0.6);
   touch-action: none;
   flex-shrink: 0;
+  transition: opacity 0.3s;
 }
 .joystick::before {
   content: '';
@@ -212,11 +229,8 @@ body {
   font-size: calc(var(--size) * 0.13);
   color: rgba(255,255,255,0.5);
 }
-.joystick.dragging .joystick-knob {
-  transition: none;
-}
+.joystick.dragging .joystick-knob { transition: none; }
 
-/* ===== PAINEL CENTRAL ===== */
 .center-panel {
   display: flex;
   flex-direction: column;
@@ -285,11 +299,11 @@ body {
   white-space: nowrap;
 }
 
-.brake-btn {
-  width: clamp(70px, 18vw, 110px);
-  padding: clamp(6px, 1.5vw, 12px) 0;
-  background:
-    linear-gradient(180deg, #1a0a0a 0%, #000 100%);
+/* Botão central: FREIO (controller) ou TOMAR CONTROLE (spectator) */
+.center-btn {
+  width: clamp(90px, 22vw, 130px);
+  padding: clamp(7px, 1.5vw, 12px) clamp(6px, 1.5vw, 10px);
+  background: linear-gradient(180deg, #1a0a0a 0%, #000 100%);
   border: 2px solid #2a0a0a;
   border-radius: 12px;
   cursor: pointer;
@@ -303,32 +317,152 @@ body {
     0 5px 12px rgba(0,0,0,0.6);
   color: var(--red);
   font-weight: bold;
-  font-size: clamp(0.7em, 1.7vw, 0.85em);
-  letter-spacing: 2px;
+  font-size: clamp(0.65em, 1.6vw, 0.8em);
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-align: center;
 }
-.brake-btn .icon {
-  font-size: clamp(1.1em, 3vw, 1.5em);
-  color: var(--red);
+.center-btn .icon {
+  font-size: clamp(1em, 2.5vw, 1.4em);
   filter: drop-shadow(0 0 6px rgba(255,0,0,0.6));
   line-height: 1;
 }
-.brake-btn:active {
-  transform: translateY(3px);
-  box-shadow: inset 0 0 20px rgba(255,0,0,0.6);
+.center-btn.take {
+  background: linear-gradient(180deg, #1a1a05 0%, #050500 100%);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow:
+    inset 0 0 12px rgba(255,200,0,0.4),
+    0 5px 12px rgba(0,0,0,0.6);
+  animation: takepulse 2s infinite;
+}
+.center-btn.take .icon { filter: drop-shadow(0 0 6px rgba(255,200,0,0.6)); }
+@keyframes takepulse {
+  0%, 100% { box-shadow: inset 0 0 12px rgba(255,200,0,0.4), 0 5px 12px rgba(0,0,0,0.6); }
+  50% { box-shadow: inset 0 0 20px rgba(255,200,0,0.7), 0 5px 20px rgba(255,200,0,0.4); }
+}
+.center-btn:active { transform: translateY(3px); }
+.center-btn:disabled { opacity: 0.5; cursor: not-allowed; animation: none; }
+
+/* ===== MODAL ===== */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadein 0.2s;
+  pointer-events: auto;
+}
+.modal-bg.show { display: flex; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: linear-gradient(180deg, #1a0505 0%, #0a0000 100%);
+  border: 2px solid var(--red);
+  border-radius: 16px;
+  padding: 24px 20px;
+  max-width: 92%;
+  width: 380px;
+  box-shadow:
+    inset 0 0 30px rgba(255,0,0,0.2),
+    0 10px 40px rgba(0,0,0,0.8),
+    0 0 40px rgba(255,0,0,0.3);
+  text-align: center;
+}
+.modal h2 {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: 1.3em;
+  letter-spacing: 1px;
+}
+.modal p {
+  margin: 0 0 12px;
+  font-size: 1em;
+  line-height: 1.5;
+  color: #fff;
+}
+.modal .countdown {
+  font-size: 0.8em;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 18px;
+  font-style: italic;
+}
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.modal-btn {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 10px;
+  border: 2px solid;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: transform 0.08s;
+}
+.modal-btn:active { transform: translateY(2px); }
+.modal-btn.accept {
+  background: linear-gradient(180deg, #008000 0%, #004000 100%);
+  border-color: #0f0;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0,255,0,0.3);
+}
+.modal-btn.deny {
+  background: linear-gradient(180deg, #800000 0%, #400000 100%);
+  border-color: var(--red);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255,0,0,0.3);
+}
+.modal-btn.cancel {
+  background: linear-gradient(180deg, #2a2a2a 0%, #0a0a0a 100%);
+  border-color: #666;
+  color: #fff;
 }
 
-/* ===== LANDSCAPE TIGHT ===== */
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.9);
+  border: 1px solid rgba(255,200,0,0.5);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 25px;
+  font-size: 0.95em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 20px rgba(255,200,0,0.3);
+  pointer-events: none;
+  animation: toastin 0.3s;
+}
+.toast.show { display: block; }
+@keyframes toastin {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 @media (orientation: landscape) and (max-height: 450px) {
   .logo { padding: 0; }
   .num { font-size: clamp(1.4em, 5vh, 2.2em); }
   .brand { font-size: clamp(0.7em, 2vh, 1em); }
   .header { padding: 4px 16px; }
+  .role-badge { top: clamp(30px, 6vh, 50px); }
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <div class="status-dot" id="status-dot"></div>
@@ -338,16 +472,15 @@ body {
   <div class="header-right">
     <span>BAT</span>
     <div class="battery-bars">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div>
     </div>
     <span>100%</span>
   </div>
 </div>
 
-<!-- LOGO -->
+<div id="role-badge" class="role-badge" style="display:none">🟢 CONTROLANDO</div>
+
 <div class="logo">
   <div class="num-row">
     <span class="bolt">⚡</span>
@@ -357,19 +490,15 @@ body {
   <div class="brand">MCQUEEN</div>
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<div class="main" id="main">
 
-  <!-- JOYSTICK ESQUERDO: FRENTE/RÉ -->
   <div class="joystick" id="joy-left">
     <div class="joystick-arrows">
-      <div class="up">▲</div>
-      <div class="down">▼</div>
+      <div class="up">▲</div><div class="down">▼</div>
     </div>
     <div class="joystick-knob">⇅</div>
   </div>
 
-  <!-- PAINEL CENTRAL -->
   <div class="center-panel">
     <div class="gauge">
       <div class="gauge-scale"><span>0</span><span>50</span><span>100</span></div>
@@ -378,53 +507,90 @@ body {
       <div class="gauge-value" id="gauge-value">0%</div>
     </div>
     <div class="state-display" id="state">PARADO</div>
-    <div class="brake-btn" id="brake">
-      <div class="icon">⏻</div>
-      <div>FREIO</div>
-    </div>
+
+    <!-- Botão central: muda entre FREIO e TOMAR CONTROLE -->
+    <button class="center-btn" id="center-btn">
+      <div class="icon" id="center-btn-icon">⏻</div>
+      <div id="center-btn-label">FREIO</div>
+    </button>
   </div>
 
-  <!-- JOYSTICK DIREITO: ESQUERDA/DIREITA -->
   <div class="joystick" id="joy-right">
     <div class="joystick-arrows">
-      <div class="left">◀</div>
-      <div class="right">▶</div>
+      <div class="left">◀</div><div class="right">▶</div>
     </div>
     <div class="joystick-knob">⇆</div>
   </div>
 
 </div>
 
+<!-- MODAL: solicitação de controle (visto pelo controlador atual) -->
+<div class="modal-bg" id="modal-incoming">
+  <div class="modal">
+    <h2>🕹️ Solicitação de controle</h2>
+    <p>Outro usuário quer controlar o carro.<br>Passar o controle?</p>
+    <p class="countdown">Resposta automática em <span id="countdown-num">15</span>s</p>
+    <div class="modal-buttons">
+      <button class="modal-btn deny" id="btn-deny">✗ Recusar</button>
+      <button class="modal-btn accept" id="btn-accept">✓ Aceitar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: aguardando resposta (visto pelo solicitante) -->
+<div class="modal-bg" id="modal-waiting">
+  <div class="modal">
+    <h2>⏳ Aguardando...</h2>
+    <p>Pedindo controle pro motorista atual.<br>Aguarde resposta.</p>
+    <p class="countdown">Timeout em <span id="wait-num">15</span>s</p>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" id="btn-cancel-req">Cancelar pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST de notificações -->
+<div class="toast" id="toast"></div>
+
 <script>
 let ws = null;
 let demoMode = true;
+let myRole = 'spec';  // 'ctrl' ou 'spec'
+let requestPending = false;
+let incomingCountdownTimer = null;
+let waitingCountdownTimer = null;
 
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
 const stateEl = document.getElementById('state');
 const gaugeFill = document.getElementById('gauge-fill');
 const gaugeValue = document.getElementById('gauge-value');
+const roleBadge = document.getElementById('role-badge');
+const mainEl = document.getElementById('main');
+const centerBtn = document.getElementById('center-btn');
+const centerBtnIcon = document.getElementById('center-btn-icon');
+const centerBtnLabel = document.getElementById('center-btn-label');
+const modalIncoming = document.getElementById('modal-incoming');
+const modalWaiting = document.getElementById('modal-waiting');
+const toastEl = document.getElementById('toast');
 
-// ===== Joystick class =====
+// ===== Joystick =====
 class Joystick {
-  constructor(elementId, axis, onChange) {
-    this.el = document.getElementById(elementId);
+  constructor(id, axis, onChange) {
+    this.el = document.getElementById(id);
     this.knob = this.el.querySelector('.joystick-knob');
     this.axis = axis;
     this.onChange = onChange;
     this.maxRadius = 0;
     this.active = false;
-    this.x = 0;
-    this.y = 0;
+    this.x = 0; this.y = 0;
     this.pointerId = null;
-
     this.el.addEventListener('pointerdown', this.onDown.bind(this));
     this.el.addEventListener('pointermove', this.onMove.bind(this));
     this.el.addEventListener('pointerup', this.onUp.bind(this));
     this.el.addEventListener('pointercancel', this.onUp.bind(this));
     this.el.addEventListener('pointerleave', this.onUp.bind(this));
   }
-
   recalc() {
     const rect = this.el.getBoundingClientRect();
     this.cx = rect.left + rect.width / 2;
@@ -432,8 +598,8 @@ class Joystick {
     const knobRect = this.knob.getBoundingClientRect();
     this.maxRadius = rect.width / 2 - knobRect.width / 2;
   }
-
   onDown(e) {
+    if (myRole !== 'ctrl') return;
     e.preventDefault();
     this.active = true;
     this.pointerId = e.pointerId;
@@ -442,29 +608,23 @@ class Joystick {
     this.recalc();
     this.update(e);
   }
-
   onMove(e) {
     if (!this.active || e.pointerId !== this.pointerId) return;
     this.update(e);
   }
-
   onUp(e) {
     if (!this.active) return;
     this.active = false;
-    this.x = 0;
-    this.y = 0;
+    this.x = 0; this.y = 0;
     this.knob.style.transform = '';
     this.el.classList.remove('dragging');
     if (this.onChange) this.onChange(0, 0);
   }
-
   update(e) {
     let dx = e.clientX - this.cx;
     let dy = e.clientY - this.cy;
-
     if (this.axis === 'vertical') dx = 0;
     if (this.axis === 'horizontal') dy = 0;
-
     const dist = Math.hypot(dx, dy);
     if (dist > this.maxRadius) {
       const a = Math.atan2(dy, dx);
@@ -473,7 +633,6 @@ class Joystick {
     }
     this.x = this.maxRadius > 0 ? dx / this.maxRadius : 0;
     this.y = this.maxRadius > 0 ? dy / this.maxRadius : 0;
-
     this.knob.style.transform = `translate(${dx}px, ${dy}px)`;
     if (this.onChange) this.onChange(this.x, this.y);
   }
@@ -481,39 +640,32 @@ class Joystick {
 
 // ===== Differential drive =====
 let leftY = 0, rightX = 0;
-let lastThrottle = 99999;
-let lastSteering = 99999;
+let lastThrottle = 99999, lastSteering = 99999;
 const DEADZONE = 0.18;
 const SEND_INTERVAL = 100;
 
 function resolve() {
   let ly = Math.abs(leftY)  < DEADZONE ? 0 : leftY;
   let rx = Math.abs(rightX) < DEADZONE ? 0 : rightX;
-
   const throttle = Math.round(-ly * 255);
   const steering = Math.round( rx * 255);
-
   let stateName;
   const atThr = Math.abs(throttle) > 30;
   const atStr = Math.abs(steering) > 30;
-  if (!atThr && !atStr)             stateName = '■ PARADO';
+  if (!atThr && !atStr) stateName = '■ PARADO';
   else if (atThr && atStr) {
     if (throttle > 0 && steering > 0) stateName = '↗ FRENTE+DIR';
     else if (throttle > 0)            stateName = '↖ FRENTE+ESQ';
     else if (steering > 0)            stateName = '↘ RÉ+DIR';
     else                              stateName = '↙ RÉ+ESQ';
   }
-  else if (atThr)                   stateName = throttle > 0 ? '▲ FRENTE' : '▼ RÉ';
-  else                              stateName = steering > 0 ? '▶ DIREITA' : '◀ ESQUERDA';
-
-  // Velocidade = só throttle linear (frente/ré). Curva não conta.
+  else if (atThr) stateName = throttle > 0 ? '▲ FRENTE' : '▼ RÉ';
+  else            stateName = steering > 0 ? '▶ DIREITA' : '◀ ESQUERDA';
   const speedPct = Math.round(Math.abs(throttle) / 255 * 100);
-
   gaugeFill.style.width = speedPct + '%';
   gaugeValue.textContent = speedPct + '%';
   stateEl.textContent = stateName;
-
-  return { throttle, steering, stateName };
+  return { throttle, steering };
 }
 
 let sendTimer = null;
@@ -524,44 +676,30 @@ function scheduleSend() {
     const { throttle, steering } = resolve();
     if (throttle !== lastThrottle || steering !== lastSteering) {
       sendCmd(`c${throttle},${steering}`);
-      lastThrottle = throttle;
-      lastSteering = steering;
+      lastThrottle = throttle; lastSteering = steering;
     }
   }, SEND_INTERVAL);
 }
 
-// ===== WebSocket — tenta múltiplos hosts em ordem =====
+// ===== WebSocket =====
 const POSSIBLE_HOSTS = [
-  'mcqueen.local',           // 1º: mDNS (Wi-Fi de casa/amigo)
-  '192.168.4.1',             // 2º: AP fallback do ESP32 (sem rede)
-  window.location.hostname   // 3º: mesmo host da página
+  'mcqueen.local',
+  '192.168.4.1',
+  window.location.hostname
 ].filter(h => h && h !== 'localhost' && h !== '127.0.0.1');
 
 let connectAttemptIdx = 0;
 let reconnectTimer = null;
 
 function tryConnect() {
-  if (window.location.protocol === 'file:') {
-    setDemoMode('DEMO');
-    return;
-  }
-
+  if (window.location.protocol === 'file:') { setDemoMode('DEMO'); return; }
   const host = POSSIBLE_HOSTS[connectAttemptIdx % POSSIBLE_HOSTS.length];
-  if (!host) {
-    setDemoMode('DEMO');
-    return;
-  }
-
+  if (!host) { setDemoMode('DEMO'); return; }
   setDemoMode('CONECTANDO...');
-
   try {
     if (ws) { ws.onclose = null; ws.close(); }
     ws = new WebSocket('ws://' + host + ':81');
-
-    const failTimer = setTimeout(() => {
-      try { ws.close(); } catch(e) {}
-    }, 2500);
-
+    const failTimer = setTimeout(() => { try { ws.close(); } catch(e) {} }, 2500);
     ws.onopen = () => {
       clearTimeout(failTimer);
       demoMode = false;
@@ -569,6 +707,7 @@ function tryConnect() {
       statusText.textContent = 'CONECTADO';
       connectAttemptIdx = 0;
     };
+    ws.onmessage = (e) => handleServerMessage(e.data);
     ws.onclose = () => {
       clearTimeout(failTimer);
       connectAttemptIdx++;
@@ -576,7 +715,7 @@ function tryConnect() {
       if (reconnectTimer) clearTimeout(reconnectTimer);
       reconnectTimer = setTimeout(tryConnect, 1500);
     };
-    ws.onerror = () => { /* onclose trata */ };
+    ws.onerror = () => {};
   } catch (e) {
     connectAttemptIdx++;
     setTimeout(tryConnect, 1500);
@@ -587,6 +726,8 @@ function setDemoMode(msg) {
   demoMode = true;
   statusDot.className = 'status-dot';
   statusText.textContent = msg;
+  // No demo, assume controller pra testar UI
+  setRole('ctrl');
 }
 
 function sendCmd(cmd) {
@@ -596,40 +737,187 @@ function sendCmd(cmd) {
   console.log('cmd:', cmd);
 }
 
+// ===== Role + UI =====
+function setRole(role) {
+  myRole = role;
+  if (role === 'ctrl') {
+    roleBadge.textContent = '🟢 CONTROLANDO';
+    roleBadge.className = 'role-badge';
+    roleBadge.style.display = 'inline-block';
+    mainEl.classList.remove('spectator');
+    centerBtn.className = 'center-btn';
+    centerBtnIcon.textContent = '⏻';
+    centerBtnLabel.textContent = 'FREIO';
+  } else {
+    roleBadge.textContent = '🟡 ESPECTADOR';
+    roleBadge.className = 'role-badge spectator';
+    roleBadge.style.display = 'inline-block';
+    mainEl.classList.add('spectator');
+    centerBtn.className = 'center-btn take';
+    centerBtnIcon.textContent = '🕹️';
+    centerBtnLabel.textContent = 'TOMAR\nCONTROLE';
+  }
+}
+
+// ===== Mensagens do servidor =====
+function handleServerMessage(msg) {
+  if (msg.startsWith('role:')) {
+    setRole(msg.substring(5));
+    return;
+  }
+  if (msg === 'req:in') { showIncomingModal(); return; }
+  if (msg === 'req:waiting') { showWaitingModal(); return; }
+  if (msg === 'req:accepted') {
+    hideWaitingModal();
+    showToast('🟢 Você está controlando!');
+    return;
+  }
+  if (msg === 'req:denied') {
+    hideWaitingModal();
+    showToast('🔴 Pedido recusado');
+    return;
+  }
+  if (msg === 'req:timeout') {
+    hideWaitingModal();
+    showToast('⏰ Sem resposta do motorista');
+    return;
+  }
+  if (msg === 'req:cancelled') {
+    hideIncomingModal();
+    return;
+  }
+  if (msg === 'req:busy') {
+    showToast('🟡 Já tem alguém pedindo controle');
+    return;
+  }
+  // State broadcast (spectator view)
+  if (msg.startsWith('st:')) {
+    if (myRole === 'spec') {
+      updateFromBroadcast(msg);
+    }
+    return;
+  }
+}
+
+function updateFromBroadcast(msg) {
+  // Format: st:<state>,t:<throttle>,s:<steering>
+  const parts = msg.substring(3).split(',');
+  let t = 0, s = 0, stateNum = 0;
+  parts.forEach(p => {
+    const [k, v] = p.split(':');
+    if (k === 't') t = parseInt(v);
+    else if (k === 's') s = parseInt(v);
+    else stateNum = parseInt(k);
+  });
+  const speedPct = Math.round(Math.abs(t) / 255 * 100);
+  gaugeFill.style.width = speedPct + '%';
+  gaugeValue.textContent = speedPct + '%';
+  const STATES = ['■ PARADO', '▲ FRENTE', '▼ RÉ', '◀ ESQUERDA', '▶ DIREITA'];
+  stateEl.textContent = STATES[stateNum] || '■ PARADO';
+}
+
+// ===== Modais =====
+function showIncomingModal() {
+  modalIncoming.classList.add('show');
+  let secs = 15;
+  document.getElementById('countdown-num').textContent = secs;
+  if (incomingCountdownTimer) clearInterval(incomingCountdownTimer);
+  incomingCountdownTimer = setInterval(() => {
+    secs--;
+    document.getElementById('countdown-num').textContent = secs;
+    if (secs <= 0) {
+      clearInterval(incomingCountdownTimer);
+      hideIncomingModal();
+    }
+  }, 1000);
+}
+function hideIncomingModal() {
+  modalIncoming.classList.remove('show');
+  if (incomingCountdownTimer) { clearInterval(incomingCountdownTimer); incomingCountdownTimer = null; }
+}
+function showWaitingModal() {
+  modalWaiting.classList.add('show');
+  let secs = 15;
+  document.getElementById('wait-num').textContent = secs;
+  if (waitingCountdownTimer) clearInterval(waitingCountdownTimer);
+  waitingCountdownTimer = setInterval(() => {
+    secs--;
+    document.getElementById('wait-num').textContent = secs;
+    if (secs <= 0) {
+      clearInterval(waitingCountdownTimer);
+      hideWaitingModal();
+    }
+  }, 1000);
+}
+function hideWaitingModal() {
+  modalWaiting.classList.remove('show');
+  if (waitingCountdownTimer) { clearInterval(waitingCountdownTimer); waitingCountdownTimer = null; }
+}
+
+// ===== Toast =====
+let toastTimer = null;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toastEl.classList.remove('show'); }, 3000);
+}
+
 // ===== Wire up joysticks =====
 const leftJoy = new Joystick('joy-left', 'vertical', (x, y) => {
+  if (myRole !== 'ctrl') return;
   leftY = y;
   scheduleSend();
 });
 const rightJoy = new Joystick('joy-right', 'horizontal', (x, y) => {
+  if (myRole !== 'ctrl') return;
   rightX = x;
   scheduleSend();
 });
 
-// Brake button
-document.getElementById('brake').addEventListener('pointerdown', e => {
+// ===== Botão central =====
+centerBtn.addEventListener('pointerdown', e => {
   e.preventDefault();
-  leftY = 0; rightX = 0;
-  if (leftJoy.active) leftJoy.onUp(e);
-  if (rightJoy.active) rightJoy.onUp(e);
-  sendCmd('s');
-  stateEl.textContent = '■ PARADO';
-  gaugeFill.style.width = '0%';
-  gaugeValue.textContent = '0%';
-  lastThrottle = 0;
-  lastSteering = 0;
+  if (myRole === 'ctrl') {
+    // FREIO
+    leftY = 0; rightX = 0;
+    if (leftJoy.active) leftJoy.onUp(e);
+    if (rightJoy.active) rightJoy.onUp(e);
+    sendCmd('s');
+    stateEl.textContent = '■ PARADO';
+    gaugeFill.style.width = '0%';
+    gaugeValue.textContent = '0%';
+    lastThrottle = 0; lastSteering = 0;
+  } else {
+    // TOMAR CONTROLE
+    if (demoMode) {
+      showToast('💡 Conecte ao ESP32 primeiro');
+      return;
+    }
+    sendCmd('req');
+  }
 });
 
-// Reposicionar joysticks ao virar tela
+// ===== Modal buttons =====
+document.getElementById('btn-accept').addEventListener('click', () => {
+  sendCmd('acc');
+  hideIncomingModal();
+});
+document.getElementById('btn-deny').addEventListener('click', () => {
+  sendCmd('den');
+  hideIncomingModal();
+});
+document.getElementById('btn-cancel-req').addEventListener('click', () => {
+  sendCmd('cnl');
+  hideWaitingModal();
+});
+
+// ===== Resize =====
 window.addEventListener('resize', () => {
-  leftJoy.recalc();
-  rightJoy.recalc();
+  leftJoy.recalc(); rightJoy.recalc();
 });
 window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    leftJoy.recalc();
-    rightJoy.recalc();
-  }, 200);
+  setTimeout(() => { leftJoy.recalc(); rightJoy.recalc(); }, 200);
 });
 
 // Init
