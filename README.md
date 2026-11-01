@@ -2,7 +2,9 @@
 
 Controle web responsivo para carrinho RC baseado em ESP32, com display OLED animado e direção differential drive (estilo tanque).
 
-> 🌐 **Demo ao vivo:** [car-mcqueen.vercel.app](https://car-mcqueen.vercel.app)
+> 🌐 **Demo ao vivo:** [car-mc-queen.vercel.app](https://car-mc-queen.vercel.app)
+
+![Controle remoto do McQueen](docs/screenshot.png)
 
 ## ⚡ Features
 
