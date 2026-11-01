@@ -1,11 +1,11 @@
 # 🏎️ CAR MCQueen — Controle Remoto
 
-Controle web responsivo para carrinho RC baseado em ESP32, com display OLED animado e direção differential drive (estilo tanque).
+Controle web responsivo para carrinho RC com display OLED animado e direção differential drive (estilo tanque).
 
 > 🌐 **Demo ao vivo:** [car-mc-queen.vercel.app](https://car-mc-queen.vercel.app)
 
 > 🚧 **Em desenvolvimento.** O controle web já funciona (modo DEMO, sem o carrinho). As peças
-> estão a caminho — próximos passos: montar o chassi, gravar o firmware do ESP32 e
+> estão a caminho — próximos passos: montar o chassi, gravar o firmware e
 > testar o controle com o carrinho de verdade.
 
 ![Controle remoto do McQueen](docs/screenshot.png)
@@ -14,7 +14,7 @@ Controle web responsivo para carrinho RC baseado em ESP32, com display OLED anim
 
 - **Joysticks touch reais** — drag com mouse ou dedo
 - **Differential drive** — combina throttle + steering pra curvas suaves
-- **Modo dual** — funciona desconectado (DEMO) ou conectado ao ESP32 via WebSocket
+- **Modo dual** — funciona desconectado (DEMO) ou conectado ao carrinho via WebSocket
 - **Responsivo** — escala fluido de iPhone SE até iPad
 - **Sem build, sem framework** — HTML/CSS/JS puro
 
@@ -29,7 +29,7 @@ Controle web responsivo para carrinho RC baseado em ESP32, com display OLED anim
 
 ## 🛠️ Hardware (em construção)
 
-- ESP32 DevKit V1
+- Microcontrolador com Wi-Fi
 - L298N (driver de motor)
 - 2× motores TT amarelos + chassi 2WD
 - OLED SSD1306 128×64 I²C (carinha do McQueen)
@@ -64,11 +64,11 @@ Acessa no celular: `http://IP_DO_PC:8000`
 
 - HTML + CSS3 + Vanilla JS
 - Hospedado em Vercel
-- Firmware ESP32 em Arduino C++ (repo separado)
+- Firmware em C++ (repo separado)
 
 ## 🚧 Roadmap
 
-- [ ] Firmware ESP32 em modo dual (AP + STA + Hotspot)
+- [ ] Firmware em modo dual (AP + STA + Hotspot)
 - [ ] mDNS pra resolver `mcqueen.local`
 - [ ] WiFiManager pra configuração de Wi-Fi sem flash
 - [ ] PWA (instalável na tela inicial do celular)
