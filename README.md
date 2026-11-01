@@ -4,6 +4,10 @@ Controle web responsivo para carrinho RC baseado em ESP32, com display OLED anim
 
 > 🌐 **Demo ao vivo:** [car-mc-queen.vercel.app](https://car-mc-queen.vercel.app)
 
+> 🚧 **Em desenvolvimento.** O controle web já funciona (modo DEMO, sem o carrinho). As peças
+> estão a caminho — próximos passos: montar o chassi, gravar o firmware do ESP32 e
+> testar o controle com o carrinho de verdade.
+
 ![Controle remoto do McQueen](docs/screenshot.png)
 
 ## ⚡ Features
